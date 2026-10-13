@@ -74,6 +74,30 @@ Needs Go 1.27+ and a display. The window is the MSX's 256x192 screen at
 
 ### Working on the port
 
+With Nix (flakes enabled), enter the development shell for Go 1.27 and
+the native graphics/audio build and runtime dependencies:
+
+```bash
+nix develop
+go run ./cmd/extract   # once, after supplying your own ROM as above
+go build ./...
+go run ./cmd/play
+```
+
+Run these commands from the repository root. The shell supports x86_64 and
+ARM64 Linux and Apple Silicon macOS; playing still needs a graphical
+desktop and working host graphics and audio drivers (including
+X11/XWayland on Linux). Assets stay local:
+the flake provides a development shell rather than a packaged game,
+because the build embeds the ROM-derived files excluded from Git.
+
+On Linux, the shell supplies ALSA plugins for desktop audio and uses
+`/run/opengl-driver/lib` when available. On other Linux distributions
+without that driver integration, OpenGL may need a
+[nixGL wrapper](https://github.com/nix-community/nixGL) to access compatible
+GPU drivers. A `GLX: No GLXFBConfigs returned` startup error can indicate
+that the OpenGL driver libraries are not being found.
+
 To trace routines yourself you also want the disassembly, which is
 likewise generated rather than distributed:
 
